@@ -113,12 +113,12 @@ Lásd `LICENCE`
 ## Jó szórakozást! 🎭💀
 
 
-##########################################################################
+#########################################################################################
 
-# 💀 Matrix Ransomware Prank
+# 🇬🇧 Matrix Ransomware Prank
 
 > **April Fools' Day Special Edition** 🎭  
-> A harmless but terrifying Matrix-style ransomware simulator for pranking your friends!
+> A harmless Matrix-style ransomware simulator for pranking your friends!
 
 ---
 
@@ -226,6 +226,3 @@ Details in `LICENCE`
 ---
 
 ## Have Fun 🎭💀
-
----
----
