@@ -102,7 +102,7 @@ Ez a szoftver "ahogy van" alapon kerül kiadásra, kizárólag szórakoztatási 
 - A túlzott realizmus által okozott szívrohamokért
 - Az áldozatok által indított bosszútréfákért
 
-**Mielőtt megtréfálsz valakit győződj meg róla, hogy enm okozol közvetett kárt!**
+**Mielőtt megtréfálsz valakit győződj meg róla, hogy nem okozol közvetett kárt!**
 
 
 ## 📜 Licenc
@@ -110,7 +110,7 @@ Ez a szoftver "ahogy van" alapon kerül kiadásra, kizárólag szórakoztatási 
 Lásd `LICENCE`
 
 
-**Jó szórakozást! 🎭💀**
+## Jó szórakozást! 🎭💀
 
 
 ##########################################################################
@@ -225,7 +225,7 @@ Details in `LICENCE`
 
 ---
 
-**Have Fun 🎭💀**
+## Have Fun 🎭💀
 
 ---
 ---
