@@ -1,0 +1,352 @@
+<!--
+April Fools' Day Prank - The Matrix
+Free to use, copy, modify, and distribute for any purpose.
+The author(s) provide this software "as is", without warranty of any kind,
+ and shall not be held liable for any damages or issues arising from its use.
+Source code available at: https://github.com/RezGabBud/The-Matrix
+-->
+
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System</title>
+    <style>
+        /*html {
+            width: 1920px;
+            height: 1080px;
+        }*/
+        * {
+            margin: 0;
+            padding: 0;
+            cursor: none;
+        }
+
+        body {
+            background: #000;
+            overflow: hidden;
+            font-family: 'Courier New', monospace;
+            pointer-events: none;
+            user-select: none;
+            /*width: 1920px;
+            height: 1080px;*/
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #message {
+            position: fixed;
+            top: 35%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff0000;
+            font-size: 52px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 1000;
+            text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
+            opacity: 0;
+            transition: opacity 1s;
+            max-width: 90%;
+            line-height: 1.3;
+        }
+
+        #message, #message-cn {
+            white-space: pre-line;
+        }
+
+        #message.show {
+            opacity: 1;
+        }
+
+        #message-cn {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff3333;
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 1000;
+            text-shadow: 0 0 15px #ff0000;
+            opacity: 0;
+            transition: opacity 1s;
+            max-width: 90%;
+            line-height: 1.4;
+        }
+
+        #message-cn.show {
+            opacity: 1;
+        }
+
+        #countdown {
+            position: fixed;
+            top: 65%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff0000;
+            font-size: 38px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 1001;
+            text-shadow: 0 0 15px #ff0000;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+
+        #countdown.show {
+            opacity: 1;
+        }
+
+        #payment {
+            position: fixed;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffff00;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 1001;
+            text-shadow: 0 0 10px #ffff00;
+            opacity: 0;
+            transition: opacity 1s;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px 40px;
+            border: 3px solid #ffff00;
+        }
+
+        #payment.show {
+            opacity: 1;
+        }
+
+        #payment div {
+            margin: 8px 0;
+        }
+
+        .label {
+            font-size: 18px;
+            color: #ffaa00;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+    <div id="message"></div>
+    <div id="message-cn"></div>
+    <div id="countdown"></div>
+    <div id="payment">
+        <div class="label">PAYMENT REQUIRED / 需要付款</div>
+        <div>AMOUNT: <span style="color: #ff0000; font-size: 32px;">$50,000 USD</span></div>
+        <div>BITCOIN ADDRESS:</div>
+        <div style="font-size: 18px; color: #00ff00;">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</div>
+        <!--<div style="font-size: 16px; margin-top: 10px;">BANK ACCOUNT: CH93 0076 2011 6238 5295 7</div>-->
+    </div>
+
+    <script>
+        /*function scaleToScreen() {
+            const scaleX = window.innerWidth / 1920;
+            const scaleY = window.innerHeight / 1080;
+
+            const scale = Math.min(scaleX, scaleY);
+
+            document.body.style.transform = `scale(${scale})`;
+            document.body.style.transformOrigin = "top left";
+        }
+
+        window.addEventListener("resize", scaleToScreen);
+        scaleToScreen();*/
+        
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        const messageDiv = document.getElementById('message');
+        const messageCnDiv = document.getElementById('message-cn');
+        const countdownDiv = document.getElementById('countdown');
+        const paymentDiv = document.getElementById('payment');
+
+        // Billentyűzet teljes letiltása, kivéve Alt+F4
+        document.addEventListener('keydown', (e) => {
+            // Alt+F4 engedélyezése (Windows bezárás)
+            /*if (event.ctrlKey && event.key.toLowerCase() === "q") {
+                return true;
+            }*/
+            // Minden más billentyű letiltása
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }, true);
+
+        // Egér letiltása
+        document.addEventListener("mousedown", e => e.preventDefault(), true);
+        document.addEventListener("mouseup", e => e.preventDefault(), true);
+        document.addEventListener("click", e => e.preventDefault(), true);
+        document.addEventListener("mousemove", e => e.preventDefault(), true);
+
+        // Kontextmenü letiltása
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+        });
+
+        // Fullscreen beállítás
+        function goFullscreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+        }
+
+        // Fullscreen indítás kattintásra
+        document.addEventListener('click', goFullscreen, { once: true });
+
+        // Canvas méret beállítása
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Mátrix karakterek
+        const chars = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*()';
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+
+        const drops = [];
+        for (let i = 0; i < columns; i++) {
+            drops[i] = Math.random() * -100;
+        }
+
+        // Zsarolóvírus üzenetek - angol
+        const messages = [
+            'YOUR FILES ARE ENCRYPTED!\nPAY NOW OR LOSE EVERYTHING!',
+            'ALL YOUR DATA IS LOCKED!\nNO BACKUP CAN SAVE YOU!',
+            'SYSTEM COMPROMISED!\nPAY $50,000 OR FILES DELETED!',
+            'RANSOMWARE DETECTED!\nYOU HAVE 24 HOURS TO PAY!',
+            'YOUR PHOTOS, DOCUMENTS, EVERYTHING\nIS NOW HOSTAGE!',
+            'DO NOT TURN OFF YOUR COMPUTER!\nPAYMENT REQUIRED IMMEDIATELY!'
+        ];
+
+        // Kínai fordítások
+        const messagesCn = [
+            '您的文件已加密！\n立即付款否则失去一切！',
+            '您的所有数据已锁定！\n没有备份可以救你！',
+            '系统已被入侵！\n支付50,000美元否则文件删除！',
+            '检测到勒索软件！\n您有24小时付款！',
+            '您的照片、文档、一切\n现在都是人质！',
+            '不要关闭计算机！\n需要立即付款！'
+        ];
+
+        let currentMessageIndex = 0;
+        let messageShown = false;
+        let startTime = Date.now();
+
+        // Visszaszámláló frissítése (48 óra)
+        function updateCountdown() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const remaining = Math.max(0, 86400 - elapsed); // 48 óra = 172800 másodperc
+            const hours = Math.floor(remaining / 3600);
+            const minutes = Math.floor((remaining % 3600) / 60);
+            const seconds = remaining % 60;
+            countdownDiv.textContent = `TIME REMAINING: ${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Üzenet megjelenítése
+        function showMessage() {
+            if (!messageShown) {
+                messageDiv.textContent = messages[currentMessageIndex];
+                messageCnDiv.textContent = messagesCn[currentMessageIndex];
+                messageDiv.classList.add('show');
+                messageCnDiv.classList.add('show');
+                countdownDiv.classList.add('show');
+                paymentDiv.classList.add('show');
+                messageShown = true;
+
+                // Következő üzenet időzítése
+                setTimeout(() => {
+                    messageDiv.classList.remove('show');
+                    messageCnDiv.classList.remove('show');
+                    messageShown = false;
+                    currentMessageIndex = (currentMessageIndex + 1) % messages.length;
+                }, 6000);
+            }
+        }
+
+        // Mátrix animáció
+        function draw() {
+            // Lassabb fade effekt = hosszabb nyomvonal
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.03)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const char = chars[Math.floor(Math.random() * chars.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+
+                // Fényesség variáció
+                const brightness = Math.random() > 0.0 ? 255 : Math.floor(Math.random() * 155 + 100);
+                ctx.fillStyle = `rgb(0, ${brightness}, 0)`;
+                
+                ctx.fillText(char, x, y);
+
+                if (y > canvas.height && Math.random() > 0.001) {
+                    drops[i] = 0;
+                }
+
+                drops[i]++;
+            }
+        }
+
+        // Hangeffekt opcionálisan (beep)
+        function playBeep() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 800;
+            oscillator.type = 'square';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        // Fő animációs loop
+        setInterval(draw, 30);
+
+        // Üzenet megjelenítése 8 másodpercenként
+        setInterval(() => {
+            showMessage();
+            playBeep();
+        }, 8000);
+
+        // Visszaszámlálás frissítése
+        setInterval(updateCountdown, 1000);
+
+        // Első üzenet megjelenítése 3 másodperc után
+        setTimeout(() => {
+            showMessage();
+            playBeep();
+        }, 3000);
+
+        // Ablak átméretezés kezelése
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        console.log('💀 RANSOMWARE ACTIVATED! Exit: Alt+F4 only.');
+    </script>
+</body>
+</html>
